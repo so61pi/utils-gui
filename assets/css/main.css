@@ -1,0 +1,45 @@
+.lv-resizer:hover,
+.lv-resizer:active {
+    background-color: var(--bs-primary);
+}
+
+.lv-resizer-h {
+    flex: 0 0 5px;
+    cursor: ew-resize;
+    background-color: var(--bs-border-color);
+}
+
+.lv-resizer-v {
+    flex: 0 0 5px;
+    cursor: ns-resize;
+    background-color: var(--bs-border-color);
+}
+
+body.cursor-resize-v,
+body.cursor-resize-v * {
+    cursor: ns-resize !important;
+}
+
+/*
+ * Disable text selection on all element by defaults.
+ * Text input elements are not affected.
+ */
+html {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+.selectable {
+    -webkit-touch-callout: default;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    -khtml-user-select: text;
+    user-select: text;
+    cursor: text;
+}
