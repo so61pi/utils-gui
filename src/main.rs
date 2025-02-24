@@ -396,6 +396,7 @@ fn ToolBase64EncodeComponent(
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum Base64DecodeOutputKind {
     Utf8,
+    Json,
     SimpleHex,
     PrettyHex,
 }
@@ -415,6 +416,13 @@ fn ToolBase64DecodeComponent(
     let (output, input_valid) = decoded
         .map(|v| match data.output_kind {
             Base64DecodeOutputKind::Utf8 => String::from_utf8_lossy(&v).to_string(),
+            Base64DecodeOutputKind::Json => {
+                let s = String::from_utf8_lossy(&v).to_string();
+                serde_json::from_str(&s)
+                    .map(|v: serde_json::Value| serde_json::to_string_pretty(&v))
+                    .unwrap_or_else(|_| Ok(s.clone()))
+                    .unwrap_or_else(|_| s)
+            },
             Base64DecodeOutputKind::SimpleHex => {
                 let mut cfg = pretty_hex::HexConfig::simple();
                 cfg.group = 0;
@@ -469,6 +477,24 @@ fn ToolBase64DecodeComponent(
                         }
                     }
                     label { class: "btn btn-outline-primary", r#for: "ToolBase64DecodeComponent-btn-radio-utf8", "UTF-8" }
+
+                    input {
+                        checked: data.output_kind == Base64DecodeOutputKind::Json,
+                        class: "btn-check",
+                        id: "ToolBase64DecodeComponent-btn-radio-json",
+                        r#type: "radio",
+                        onchange: {
+                            clone!(data);
+                            move |_| {
+                                clone!(data);
+                                onupdate.call(ToolBase64DecodeComponentData{
+                                    output_kind:Base64DecodeOutputKind::Json,
+                                    ..data
+                                });
+                            }
+                        }
+                    }
+                    label { class: "btn btn-outline-primary", r#for: "ToolBase64DecodeComponent-btn-radio-json", "JSON" }
 
                     input {
                         checked: data.output_kind == Base64DecodeOutputKind::SimpleHex,
